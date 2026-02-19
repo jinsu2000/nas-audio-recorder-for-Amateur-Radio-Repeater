@@ -5,7 +5,7 @@ services:
     build: .
     container_name: audio-recorder
     volumes:
-      - /vol4/1000/docker储存目录/audio-recorder/record:/app/recordings
+      - /nmt/example:/app/recordings
       - /dev/snd:/dev/snd  # 挂载音频设备
     healthcheck:
       test: ["CMD", "bash", "-c", "ps aux | grep record.sh | grep -v grep"]
