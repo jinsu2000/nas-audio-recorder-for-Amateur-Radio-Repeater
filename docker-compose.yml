@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  audio-recorder:
+    build: .
+    container_name: audio-recorder
+    volumes:
+      - /vol4/1000/docker储存目录/audio-recorder/record:/app/recordings
+      - /dev/snd:/dev/snd  # 挂载音频设备
+    healthcheck:
+      test: ["CMD", "bash", "-c", "ps aux | grep record.sh | grep -v grep"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    devices:
+      - /dev/snd  # 明确指定音频设备
+    environment:
+      - RECORD_DURATION=60  # 每段录音时长（秒）
+      - MAX_FILE_AGE=72  # 文件最大保留时间（小时）
+      - INITIAL_BITRATE=128k  # 初始码率
+      - MIN_BITRATE=64k  # 最小码率
+      - MAX_BITRATE=256k  # 最大码率
+      - ADJUST_INTERVAL=60  # 码率调节间隔（秒）
+      - PUID=99
+      - PGID=100
+    restart: unless-stopped
